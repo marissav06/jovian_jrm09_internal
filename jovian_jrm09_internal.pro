@@ -12,7 +12,7 @@
 ;% Outputs:
 ;%  B - Spherical Magnetic field vector the JRM09 internal magnetic field model, [Br, Btheta, Bphi], units of nT.
 ;%
-;% This code can be used with con2020_model_rtp (https://github.com/marissav06/con2020_idl/blob/main/con2020_model_rtp.pro),
+;% This code can be used with con2020_model_rtp.pro (https://github.com/marissav06/con2020_idl/blob/main/con2020_model_rtp.pro),
 ;%     which gives the field produced by the Connerney et al. (2020) current sheet, to yield the full (internal+external) magnetic field in
 ;%     Jupiter's magnetosphere
 ;%
