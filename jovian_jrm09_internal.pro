@@ -23,6 +23,7 @@
 ;%
 ;% This code was written by Marissa Vogt (mvogt@bu.edu) and last updated Sept. 2021
 ;% It is based on a routine originally written by K. Khurana, translated into IDL by Marissa Vogt in 2009
+;% Thanks to Masafumi Imai for providing code for his version of the JRM09 model, which was used to test and validate this code
 
 FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
 
