@@ -27,6 +27,8 @@
 
 FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
 
+  lat_rads = !dpi - colat_rads
+
   ;Values from Connerney et al. 2020
   ;See supplemental online information Table S1, https://agupubs.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2F2018GL077312&file=grl57087-sup-0005-2018GL077312-ds01.txt
 
@@ -98,8 +100,8 @@ bbt = 0.d
 bbf = 0.d
 cos_phi = cos(elong_rads)
 sin_phi = sin(elong_rads)
-cos_theta = cos(colat_rads)
-sin_theta = sin(colat_rads)
+cos_theta = cos(lat_rads)
+sin_theta = sin(lat_rads)
 bk = sin_theta lt 1e-5
 
 for m=1,k do begin
@@ -152,7 +154,7 @@ endfor
 br = bbr
 bt  = bbt
 if bk eq 1 then begin
-  if (c lt 0.d) then bbf = -bbf
+  if (cos_theta lt 0.d) then bbf = -bbf
   bf = bbf
 endif
 if bk ne 1 then bf = bbf/sin_theta
