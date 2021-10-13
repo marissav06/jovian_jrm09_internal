@@ -200,7 +200,6 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
   colat_rads_dbl = DOUBLE(colat_rads)
   elong_rads_dbl = DOUBLE(elong_rads)
 
-  ;% RJW: This code can be sped up by assuming k = 11 always, and replacing k with 11, Should we?
   IF degree NE order THEN BEGIN
     degree = order
     k = degree + 1
