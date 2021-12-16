@@ -253,7 +253,7 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
     y = p;% 1s
   ENDELSE
 
-  FOR m = 1, order DO BEGIN
+  FOR m = 1, k DO BEGIN
     bm  = (m NE 1)
     IF bm THEN BEGIN
       m_minus_1 = DOUBLE(m - 1)
