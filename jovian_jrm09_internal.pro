@@ -200,10 +200,11 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
   colat_rads_dbl = DOUBLE(colat_rads)
   elong_rads_dbl = DOUBLE(elong_rads)
 
-  IF degree NE order THEN BEGIN
-    degree = order
-    k = degree + 1
-  ENDIF
+  k = order + 1
+  ;IF degree NE order THEN BEGIN
+  ;  degree = order
+  ;  k = degree + 1
+  ;ENDIF
   IF scalar_input THEN BEGIN
     a         = [0d,0d,0d,0d,0d,0d,0d,0d,0d, 0d, 0d, 0d] ;% = DBLARR(k+1)
     DINDGEN_k = [0d,1d,2d,3d,4d,5d,6d,7d,8d, 9d,10d,11d] ;% = DINDGEN(k+1), done manually for speed
@@ -375,7 +376,7 @@ PRO _jovian_jrm09_internal_rjw_setup
     endfor
   endfor
   s = 1.d;
-  for n=2, degree do begin
+  for n=2, degree+1 do begin
     mn=n*(n-1)/2+1.d;
     s=s*double(2.d*n-3.d)/double(n-1);
     g(mn)=g(mn)*s;
