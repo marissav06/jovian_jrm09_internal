@@ -206,8 +206,8 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
   ;  k = degree + 1
   ;ENDIF
   IF scalar_input THEN BEGIN
-    a         = [0d,0d,0d,0d,0d,0d,0d,0d,0d, 0d, 0d, 0d] ;% = DBLARR(k+1)
-    DINDGEN_k = [0d,1d,2d,3d,4d,5d,6d,7d,8d, 9d,10d,11d] ;% = DINDGEN(k+1), done manually for speed
+    a         = DBLARR(k+1)
+    DINDGEN_k = DINDGEN(k+1), done manually for speed
   ENDIF ELSE BEGIN
     a           = DBLARR(N_input,k+1)
     DINDGEN_k   = a
