@@ -22,9 +22,10 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
   ;% For full field model: B = jovian_jrm09_internal(r_rj, colat_rads, elong_rads) + con2020_model_rtp(eq_type, r_rj, colat_rads, elong_rads)
   ;%
   ;% This code was written by Marissa Vogt (mvogt@bu.edu) and Rob Wilson (rob.wilson@lasp.colorado.edu)
-  ;% Last updated October 2021
+  ;% Last updated December 2021
   ;% It is based on a routine originally written by K. Khurana, translated into IDL by Marissa Vogt in 2009
-  ;% Thanks to Masafumi Imai for providing code for his version of the JRM09 model, which was used to test and validate this code
+  ;% Thanks to Masafumi Imai for providing code for his version of the JRM09 model, which was used to test and validate this code.
+  ;% Thanks to Gabby Provan, Matt James, and Marty Brennan for helpful discussions.
 
   ON_ERROR, 2 ; % Exit code if an error in main, don't stop in code - no Matlab equivalent, just delete line in Matlab
 
@@ -207,7 +208,7 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
   ;ENDIF
   IF scalar_input THEN BEGIN
     a         = DBLARR(k+1)
-    DINDGEN_k = DINDGEN(k+1), done manually for speed
+    DINDGEN_k = DINDGEN(k+1); done manually for speed
   ENDIF ELSE BEGIN
     a           = DBLARR(N_input,k+1)
     DINDGEN_k   = a
