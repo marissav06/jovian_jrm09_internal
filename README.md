@@ -19,6 +19,6 @@ Spherical Magnetic field vector from the JRM09 internal magnetic field model, [B
 </ul>
 
 
-This code was written by Marissa Vogt (mvogt@bu.edu) and last updated December 2021
+This code was written by Marissa Vogt (mvogt@bu.edu) and Rob Wilson and was last updated December 2021
 It is based on a routine originally written by K. Khurana and translated into IDL by Marissa Vogt in 2009 (for the VIP4 internal field model). 
-Thanks to Masafumi Imai for providing code for his version of the JRM09 model, which was used to test and validate this cod
+Thanks to Masafumi Imai for providing code for his version of the JRM09 model, which was used to test and validate this code
