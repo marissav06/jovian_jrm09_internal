@@ -2,6 +2,8 @@
 This repository contains IDL code used to calculate the JRM09 model (<a href="https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1002/2018GL077312
 ">Connerney et al., 2018</a>) of Jupiter's internal magnetic field model in <a href="https://github.com/marissav06/jovian_jrm09_internal/blob/main/jovian_jrm09_internal_rtp.pro">spherical (rtp)</a> or <a href="https://github.com/marissav06/jovian_jrm09_internal/blob/main/jovian_jrm09_internal_xyz.pro">cartesian (xyz)</a> coordinates (note that <a href="https://github.com/marissav06/jovian_jrm09_internal/blob/main/jovian_jrm09_internal_xyz.pro">jovian_jrm09_internal_xyz.pro</a> calls <a href="https://github.com/marissav06/jovian_jrm09_internal/blob/main/jovian_jrm09_internal_rtp.pro">jovian_jrm09_internal_rtp.pro</a> so users should download both files). 
 
+Please see <a href="https://github.com/marissav06/jovian_jrm09_internal_matlab">https://github.com/marissav06/jovian_jrm09_internal_matlab</a> for MATLAB versions of the JRM09 internal field code.
+
 This code can be used with <a href="https://github.com/marissav06/con2020_idl/blob/main/con2020_model_rtp.pro">con2020_model_rtp.pro</a> and <a href="https://github.com/marissav06/con2020_idl/blob/main/con2020_model_xyz.pro">con2020_model_xyz.pro</a>, which gives the field produced by the Connerney et al. (2020) current sheet. 
 
 <h3>Required inputs (System III Spherical, right handed):</h3>
