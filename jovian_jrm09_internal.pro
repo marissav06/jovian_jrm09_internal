@@ -58,7 +58,7 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
   ;============
   ;% Used function _jovian_jrm09_internal_rjw_setup (below in this file) to copy/paste rec, g and h
   ;% rec, g and h never change - so why calculate them each time?
-  degree = 20
+  degree = 10
   order = 10
   rec = [$
     0d,                                0d,        0.33333333333333331482962d,                                0d, $
@@ -201,31 +201,28 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
   colat_rads_dbl = DOUBLE(colat_rads)
   elong_rads_dbl = DOUBLE(elong_rads)
 
-  k = order + 1
-  ;IF degree NE order THEN BEGIN
-  ;  degree = order
-  ;  k = degree + 1
-  ;ENDIF
+  km = order + 1
+  kn = degree + 1
   IF scalar_input THEN BEGIN
-    a         = DBLARR(k+1)
-    DINDGEN_k = DINDGEN(k+1); done manually for speed
+    a         = DBLARR(kn+1)
+    DINDGEN_kn = DINDGEN(kn+1); done manually for speed
   ENDIF ELSE BEGIN
-    a           = DBLARR(N_input,k+1)
-    DINDGEN_k   = a
-    FOR i = 0,k DO DINDGEN_k[*,i] = i
+    a           = DBLARR(N_input,kn+1)
+    DINDGEN_kn   = a
+    FOR i = 0,kn DO DINDGEN_kn[*,i] = i
   ENDELSE
 
   ; Instead of: a = (1d/r_rj_dbl)^DINDGEN_kp1, do the da to end of for loop
   da = 1d/r_rj_dbl
   IF scalar_input THEN BEGIN
     a[0] = da
-    FOR i=1,k DO a[i] = a[i-1]*da
+    FOR i=1,kn DO a[i] = a[i-1]*da
   ENDIF ELSE BEGIN ; the following vectorized 2 lines works for scalars, but is slower.
     a[*,0] = da
-    FOR i=1,k DO a[*,i] = a[*,i-1]*da
+    FOR i=1,kn DO a[*,i] = a[*,i-1]*da
   ENDELSE
 
-  b = a * DINDGEN_k
+  b = a * DINDGEN_kn
 
   cos_phi   = cos(elong_rads_dbl)
   sin_phi   = sin(elong_rads_dbl)
@@ -254,7 +251,7 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
     y = p;% 1s
   ENDELSE
 
-  FOR m = 1, k DO BEGIN
+  FOR m = 1, km DO BEGIN
     bm  = (m NE 1)
     IF bm THEN BEGIN
       m_minus_1 = DOUBLE(m - 1)
@@ -267,7 +264,7 @@ FUNCTION jovian_jrm09_internal, r_rj, colat_rads, elong_rads
     bi = zero_array
     p2 = zero_array
     d2 = zero_array
-    FOR n = m, k DO BEGIN
+    FOR n = m, kn DO BEGIN
       mn = n*(n-1)/2 + m
       w  = g[mn]*y + h[mn]*x
       ;IF (abs(p2) LT 1d-38) THEN p2 = 0d ; RJW - Why have these lines?
@@ -358,7 +355,7 @@ PRO _jovian_jrm09_internal_rjw_setup
     0.d, -8467.4d, -1383.8d, 5697.7d, -2056.3d, 3081.5d, -721.2d, 1352.5d, -210.1d, 1567.6d, $
     0.d, -4692.6d, 4445.8d, -2378.6d, -2204.3d, 164.1d, -1361.6d, -2031.5d, 1411.8d, -714.3d, 1676.5d, replicate(0.d, 200)] ; replicates go further than we need...
     
-  degree = 20
+  degree = 10
   order = 10
   ;============
   ;End parts that are hard-coded for JRM09
@@ -368,7 +365,7 @@ PRO _jovian_jrm09_internal_rjw_setup
   b = dindgen(degree)*0.d
   rec = h*0.d
 
-  for n=1, degree do begin
+  for n=1, degree+1 do begin
     n2 = 2*n-1;
     n2 = n2*(n2-2);
     for m=1, n do begin
