@@ -1,4 +1,7 @@
 FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
+  ;% ======
+  ;% jovian_jrm09_internal
+  ;% ======
   ;% Code to calculate the JRM09 model of Jupiter's internal magnetic field model
   ;% Reference: Connerney et al., 2018, https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1002/2018GL077312
   ;%
@@ -10,12 +13,17 @@ FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
   ;% Outputs:
   ;%  B - Spherical Magnetic field vector the JRM09 internal magnetic field model, [Br, Btheta, Bphi], units of nT.
   ;%
-  ;% Usage:
-  ;% For internal field only: B = jovian_jrm09_internal_rtp(r_rj, colat_rads, elong_rads)
+  ;% This code can be used with con2020_model_rtp.pro (https://github.com/marissav06/con2020_idl/blob/main/con2020_model_rtp.pro),
+  ;%     which gives the field produced by the Connerney et al. (2020) current sheet, to yield the full (internal+external) magnetic field in
+  ;%     Jupiter's magnetosphere
   ;%
-  ;% This code was written by Marissa Vogt (mvogt@bu.edu) and Rob Wilson (rob.wilson@lasp.colorado.edu).
-  ;% Last updated January 2022
-  ;% It is based on a routine originally written by K. Khurana, translated into IDL by Marissa Vogt in 2009.
+  ;% Usage:
+  ;% For internal field only: B = jovian_jrm09_internal(r_rj, colat_rads, elong_rads)
+  ;% For full field model: B = jovian_jrm09_internal(r_rj, colat_rads, elong_rads) + con2020_model_rtp(eq_type, r_rj, colat_rads, elong_rads)
+  ;%
+  ;% This code was written by Marissa Vogt (mvogt@bu.edu) and Rob Wilson (rob.wilson@lasp.colorado.edu)
+  ;% Last updated December 2021
+  ;% It is based on a routine originally written by K. Khurana, translated into IDL by Marissa Vogt in 2009
   ;% Thanks to Masafumi Imai for providing code for his version of the JRM09 model, which was used to test and validate this code.
   ;% Thanks to Gabby Provan, Matt James, and Marty Brennan for helpful discussions.
 
@@ -43,25 +51,15 @@ FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
     IF (min_z LT 0d) OR (max_z GT !DPI*2d) THEN MESSAGE,'ERROR: Third  argument, Position elong_rads, must be in units of radians and >= 0 and <= 2*Pi only, and not outside that range (did you use degress instead?)'
   ENDELSE
 
-  ;%============
-  ;% Begin hard-coding for JRM09
-  ;% Values from Connerney et al. 2020
-  ;% See supplemental online information Table S1, https://agupubs.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2F2018GL077312&file=grl57087-sup-0005-2018GL077312-ds01.txt
-  ;%============
+  ;============
+  ;Begin hard-coding for JRM09
+  ;Values from Connerney et al. 2020
+  ;See supplemental online information Table S1, https://agupubs.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2F2018GL077312&file=grl57087-sup-0005-2018GL077312-ds01.txt
+  ;============
   ;% Used function _jovian_jrm09_internal_rjw_setup (below in this file) to copy/paste rec, g and h
   ;% rec, g and h never change - so why calculate them each time?
-
-  ;% degree = 20
-  ;% order  = 10
-  ;% IF degree NE order THEN BEGIN
-  ;%   degree = order
-  ;%   k = degree + 1
-  ;% ENDIF ;% ELSE k = what?
-  degree = 20
+  degree = 10
   order = 10
-
-  ;% Used function _jovian_jrm09_internal_rjw_setup (below in this file) to copy/paste rec, g and h
-  ;% rec, g and h never change - so why calculate them each time?
   rec = [$
     0d,                                0d,        0.33333333333333331482962d,                                0d, $
     0.26666666666666666296592d,        0.20000000000000001110223d,                                0d,        0.25714285714285711748062d, $
@@ -194,40 +192,37 @@ FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
     0d,                                0d,                                0d,                                0d, $
     0d,                                0d,                                0d,                                0d, $
     0d,                                0d,                                0d]
-  ;%============
-  ;% End parts that are hard-coded for JRM09
-  ;%============
+  ;============
+  ;End parts that are hard-coded for JRM09
+  ;============
 
   ;% Changing inputs to Doubles, and not using input names (so as not to alter inputs, an IDL issue)
   r_rj_dbl       = DOUBLE(    r_rj  )
   colat_rads_dbl = DOUBLE(colat_rads)
   elong_rads_dbl = DOUBLE(elong_rads)
 
-  k = order + 1
-  ;IF degree NE order THEN BEGIN
-  ;  degree = order
-  ;  k = degree + 1
-  ;ENDIF
+  km = order + 1
+  kn = degree + 1
   IF scalar_input THEN BEGIN
-    a         = DBLARR(k+1)
-    DINDGEN_k = DINDGEN(k+1); done manually for speed
+    a         = DBLARR(kn+1)
+    DINDGEN_kn = DINDGEN(kn+1); done manually for speed
   ENDIF ELSE BEGIN
-    a           = DBLARR(N_input,k+1)
-    DINDGEN_k   = a
-    FOR i = 0,k DO DINDGEN_k[*,i] = i
+    a           = DBLARR(N_input,kn+1)
+    DINDGEN_kn   = a
+    FOR i = 0,kn DO DINDGEN_kn[*,i] = i
   ENDELSE
 
   ; Instead of: a = (1d/r_rj_dbl)^DINDGEN_kp1, do the da to end of for loop
   da = 1d/r_rj_dbl
   IF scalar_input THEN BEGIN
     a[0] = da
-    FOR i=1,k DO a[i] = a[i-1]*da
+    FOR i=1,kn DO a[i] = a[i-1]*da
   ENDIF ELSE BEGIN ; the following vectorized 2 lines works for scalars, but is slower.
     a[*,0] = da
-    FOR i=1,k DO a[*,i] = a[*,i-1]*da
+    FOR i=1,kn DO a[*,i] = a[*,i-1]*da
   ENDELSE
 
-  b = a * DINDGEN_k
+  b = a * DINDGEN_kn
 
   cos_phi   = cos(elong_rads_dbl)
   sin_phi   = sin(elong_rads_dbl)
@@ -256,7 +251,7 @@ FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
     y = p;% 1s
   ENDELSE
 
-  FOR m = 1, k DO BEGIN
+  FOR m = 1, km DO BEGIN
     bm  = (m NE 1)
     IF bm THEN BEGIN
       m_minus_1 = DOUBLE(m - 1)
@@ -269,7 +264,7 @@ FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
     bi = zero_array
     p2 = zero_array
     d2 = zero_array
-    FOR n = m, k DO BEGIN
+    FOR n = m, kn DO BEGIN
       mn = n*(n-1)/2 + m
       w  = g[mn]*y + h[mn]*x
       ;IF (abs(p2) LT 1d-38) THEN p2 = 0d ; RJW - Why have these lines?
@@ -336,9 +331,12 @@ PRO _jovian_jrm09_internal_rjw_setup
   ON_ERROR, 2 ; % Exit code if an error in main, don't stop in code - no Matlab equivalent, just delete line in Matlab
   COMPILE_OPT HIDDEN
 
+
+  ;============
+  ;Begin hard-coding for JRM09
   ;Values from Connerney et al. 2020
   ;See supplemental online information Table S1, https://agupubs.onlinelibrary.wiley.com/action/downloadSupplement?doi=10.1002%2F2018GL077312&file=grl57087-sup-0005-2018GL077312-ds01.txt
-
+  ;============
   g = [0.d, 0.d, 410244.7d, -71498.3d, 11670.4d, -56835.8d, 48689.5d, $
     4018.6d, -37791.1d, 15926.3d, -2710.5d, $
     -34645.4d, -8247.6d, -2406.1d, -11083.8d, -17837.2d, $
@@ -356,12 +354,18 @@ PRO _jovian_jrm09_internal_rjw_setup
     0.d, -2409.7d, -11614.6d, 9287.0d, -911.9d, 2754.5d, -2446.1d, 1207.3d, -2887.3d, $
     0.d, -8467.4d, -1383.8d, 5697.7d, -2056.3d, 3081.5d, -721.2d, 1352.5d, -210.1d, 1567.6d, $
     0.d, -4692.6d, 4445.8d, -2378.6d, -2204.3d, 164.1d, -1361.6d, -2031.5d, 1411.8d, -714.3d, 1676.5d, replicate(0.d, 200)] ; replicates go further than we need...
-
+    
+  degree = 10
+  order = 10
+  ;============
+  ;End parts that are hard-coded for JRM09
+  ;============
+  
   a = dindgen(degree)*0.d
   b = dindgen(degree)*0.d
   rec = h*0.d
 
-  for n=1, degree do begin
+  for n=1, degree+1 do begin
     n2 = 2*n-1;
     n2 = n2*(n2-2);
     for m=1, n do begin
