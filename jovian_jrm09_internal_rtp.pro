@@ -1,6 +1,6 @@
 FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
   ;% ======
-  ;% jovian_jrm09_internal
+  ;% jovian_jrm09_internal_rtp
   ;% ======
   ;% Code to calculate the JRM09 model of Jupiter's internal magnetic field model
   ;% Reference: Connerney et al., 2018, https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1002/2018GL077312
@@ -18,11 +18,11 @@ FUNCTION jovian_jrm09_internal_rtp, r_rj, colat_rads, elong_rads
   ;%     Jupiter's magnetosphere
   ;%
   ;% Usage:
-  ;% For internal field only: B = jovian_jrm09_internal(r_rj, colat_rads, elong_rads)
-  ;% For full field model: B = jovian_jrm09_internal(r_rj, colat_rads, elong_rads) + con2020_model_rtp(eq_type, r_rj, colat_rads, elong_rads)
+  ;% For internal field only: B = jovian_jrm09_internal_rtp(r_rj, colat_rads, elong_rads)
+  ;% For full field model: B = jovian_jrm09_internal_rtp(r_rj, colat_rads, elong_rads) + con2020_model_rtp(eq_type, r_rj, colat_rads, elong_rads)
   ;%
   ;% This code was written by Marissa Vogt (mvogt@bu.edu) and Rob Wilson (rob.wilson@lasp.colorado.edu)
-  ;% Last updated December 2021
+  ;% Last updated February 2022
   ;% It is based on a routine originally written by K. Khurana, translated into IDL by Marissa Vogt in 2009
   ;% Thanks to Masafumi Imai for providing code for his version of the JRM09 model, which was used to test and validate this code.
   ;% Thanks to Gabby Provan, Matt James, and Marty Brennan for helpful discussions.
